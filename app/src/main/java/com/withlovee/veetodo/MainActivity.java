@@ -29,12 +29,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         readItems();
         lvItems = (ListView) findViewById(R.id.lvItems);
-        items = new ArrayList<String>();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
-
-        items.add("Milk - low fat");
-        items.add("Egg - 1 dozen");
 
         setupListViewListener();
     }
