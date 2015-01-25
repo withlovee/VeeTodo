@@ -1,5 +1,6 @@
 package com.withlovee.veetodo;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 
@@ -22,6 +24,8 @@ public class MainActivity extends ActionBarActivity {
     ArrayList<String> items;
     ArrayAdapter<String> itemsAdapter;
     ListView lvItems;
+    private final int REQUEST_CODE = 20;
+    private final int RESULT_OK = 200;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,15 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
         );
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(MainActivity.this, EditItemActivity.class);
+                i.putExtra("item", items.get(position));
+                i.putExtra("itemPosition", position);
+                startActivityForResult(i, REQUEST_CODE);
+            }
+        });
     }
 
     private void readItems(){
@@ -101,4 +114,18 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        if(resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            String itemText = data.getStringExtra("item");
+            Toast.makeText(this, "Updated "+itemText, Toast.LENGTH_SHORT).show();
+            int position = data.getIntExtra("itemPosition", 0);
+            items.set(position, itemText);
+            writeItems();
+            itemsAdapter.notifyDataSetChanged();
+        }
+    }
+
+
 }
